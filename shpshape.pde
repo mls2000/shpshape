@@ -10,13 +10,14 @@ boolean loaded = false;
 List<Contour> shapes;
 double minX, maxX, minY, maxY, scale;
 
-//final String SOURCE_FILE = "tl_2021_33_bg";
+//final String SOURCE_FILES = new String[]{"tl_2021_33_bg"};
 //final String ID_COLUMN = "GEOID";
 //final String[] dataColumns = new String[]{"NAMELSAD" , "COUNTYFP"};
-final String SOURCE_FILE = "tl_2021_33015_roads";
+//final String exportFileName = "tl_2021_33_bg";
+final String[] SOURCE_FILES = new String[] {"tl_2021_33015_roads", "tl_2021_33017_roads"};
 final String ID_COLUMN = "LINEARID";
 final String[] dataColumns = new String[]{"FULLNAME","RTTYP","MTFCC"};
-
+final String exportFileName = "tl_2021_33015_roads";
 
 boolean exporting = true;
 
@@ -40,7 +41,14 @@ void loadData() {
 void loadMaps() {
   try {
     minX = Double.NaN;
-    shapes = loadShapefile(SOURCE_FILE);
+    shapes = new ArrayList();
+    for (String fname : SOURCE_FILES) {
+      List<Contour> fileShapes = loadShapefile(fname);
+      /* there's probably a better way to concatenate arrays */
+      for (Contour kant : fileShapes) {
+        shapes.add(kant);
+      }
+    }
     /*
     compare the aspect ratio of the map to the aspect ratio
     of the screen to see which is the constraint
@@ -147,7 +155,7 @@ void export() {
   float xRange = maxX - minX;
   float yRange = maxY - minY;
   float range = 10000 / max(xRange, yRange); 
-  PrintWriter writer = createWriter("output/" + SOURCE_FILE + ".json");
+  PrintWriter writer = createWriter("output/" + exportFileName + ".json");
   boolean first = true;
   writer.println(String.format("{\"bounds\":[0.0,0.0,%d,%d],",round(xRange*range), round(yRange*range)));
   writer.println("\"projection\":\"Mercator\",");
