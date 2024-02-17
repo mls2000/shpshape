@@ -2,15 +2,21 @@ class Contour {
   List<ShapeCoord> coordinates;
   String id;
   String[] data; 
+  List<Float> acs;
   
   Contour(String id, String[] data) {
     this.id = id;
     this.data = data;
+    acs = new ArrayList();
     coordinates = new ArrayList();
   }
   
   void add(ShapeCoord c) {
     coordinates.add(c);
+  }
+  
+  void addACS(float f) {
+    acs.add(f);
   }
   
   
