@@ -1,11 +1,11 @@
 class Contour {
-  ArrayList<ShapeCoord> coordinates;
-  String name, id, county;
+  List<ShapeCoord> coordinates;
+  String id;
+  String[] data; 
   
-  Contour(String name, String id, String county) {
-    this.name = name;
+  Contour(String id, String[] data) {
     this.id = id;
-    this.county = county;
+    this.data = data;
     coordinates = new ArrayList();
   }
   

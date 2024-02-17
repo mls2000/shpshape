@@ -1,6 +1,7 @@
 import java.util.regex.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import com.benfry.carto.Shapefile;
 import com.benfry.table.DbfTable;
 
@@ -9,8 +10,14 @@ boolean loaded = false;
 List<Contour> shapes;
 double minX, maxX, minY, maxY, scale;
 
-//final String fname = "tl_2021_33_tract";
-final String SOURCE_FILE = "tl_2021_33_bg";
+//final String SOURCE_FILE = "tl_2021_33_bg";
+//final String ID_COLUMN = "GEOID";
+//final String[] dataColumns = new String[]{"NAMELSAD" , "COUNTYFP"};
+final String SOURCE_FILE = "tl_2021_33015_roads";
+final String ID_COLUMN = "LINEARID";
+final String[] dataColumns = new String[]{"FULLNAME","RTTYP","MTFCC"};
+
+
 boolean exporting = true;
 
 
@@ -55,9 +62,11 @@ void loadMaps() {
 ArrayList<Contour> loadShapefile(String prefix) throws IOException {
   Shapefile source = new Shapefile(new File(dataPath(prefix + ".shp")));
   DbfTable     dbf = new DbfTable(new File(dataPath(prefix + ".dbf")));
-  String[] ids = dbf.getStringColumn("GEOID");
-  String[] names = dbf.getStringColumn("NAMELSAD");
-  String[] counties = dbf.getStringColumn("COUNTYFP");
+  String[] ids = dbf.getStringColumn(ID_COLUMN);
+  String[][] rowData = new String[dataColumns.length][ids.length];
+  for (int i = 0; i < dataColumns.length; i++) {
+    rowData[i] = dbf.getStringColumn(dataColumns[i]);
+  }
   ArrayList<Contour> container = new ArrayList();
   int rCount = 0;
   for (Shapefile.Record rec : source.getRecords()) {
@@ -66,7 +75,11 @@ ArrayList<Contour> loadShapefile(String prefix) throws IOException {
     for (int part = 0; part < offsets.length; part++) {
       int first = offsets[part];
       int last = (part == offsets.length - 1) ? rec.getPointCount() : offsets[part+1];
-      Contour kant = new Contour(names[rCount], ids[rCount], counties[rCount]);
+      String[] row = new String[dataColumns.length];
+      for (int i = 0; i < dataColumns.length; i++) {
+        row[i] = rowData[i][rCount];
+      }
+      Contour kant = new Contour(ids[rCount], row);
       container.add(kant);
       for (int p = first; p < last; p++) {
         ShapeCoord c = new ShapeCoord(rec.getX(p), rec.getY(p));
@@ -159,8 +172,12 @@ void export() {
       //xy.append("["+c.px+","+c.py+"]");
       xy.append(String.format("%d,%d", round((c.x - minX) * range), round((c.y - minY) * range)));
     }
-    //writer.print("{\"id\":\"" + kant.id + "\",\"name\":\"" + kant.name + "\",\"county\":\"" + kant.county + "\",\"lonlat\":["+lonlat+"],\"xy\":["+xy+"]}");
-    writer.print("{\"id\":\"" + kant.id + "\",\"name\":\"" + kant.name + "\",\"county\":\"" + kant.county + "\",\"xy\":["+xy+"]}");
+    writer.print("{\"id\":\"" + kant.id + "\"");
+    for (int i = 0; i < dataColumns.length; i++) {
+      writer.print(String.format(",\"%s\":\"%s\"", dataColumns[i], kant.data[i]));
+    }
+    //writer.print(",\"lonlat\":["+lonlat+"]");
+    writer.print(",\"xy\":["+xy+"]}");
   }
   writer.println("]");
   writer.println("}");
