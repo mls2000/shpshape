@@ -69,6 +69,7 @@ void loadMaps() {
       for (Contour kant : fileShapes) {
         shapes.add(kant);
         lookup.put(kant.id, kant);
+        //println(kant.id);
       }
     }
     /*
@@ -153,8 +154,10 @@ void loadDemoData() {
         denominatorIndex = c - ACS_COL_START_INDEX;
       }      
     }
+    /* geo id in the ACS file has a prefix of "15000US" */
+    final int idStart = "15000US".length();
     for (int r = 0; r < table.getRowCount(); r++) {
-      String geoId = table.getString(r, 1);
+      String geoId = table.getString(r, 1).substring(idStart);
       Contour kant = lookup.get(geoId);
       if (kant != null) {
         for (int c = ACS_COL_START_INDEX; c < colNames.length; c++) {

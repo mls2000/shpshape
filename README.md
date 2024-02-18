@@ -23,9 +23,6 @@ import fiona
 path = 'data/ACS_2021_5YR_BG_33_NEW_HAMPSHIRE.gdb'
 for flayer in fiona.listlayers(path):
   fc = gpd.read_file(path, driver='FileGDB', layer=flayer)
-  fc.to_csv(f'./output/{flayer}.csv')
-
-# Or write to GeoJSON
-# fc.to_file('/path/to/out_geojson.geojson', driver='GeoJSON')
+  fc.to_csv(f'./data/acs/bg/{flayer}.csv')
 ```
 
