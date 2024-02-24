@@ -16,6 +16,8 @@ python3 -m venv venv
 . venv/bin/activate
 pip install pandas
 pip install geopandas
+# make the output folder
+mkdir -p data/acs/bg
 
 python3
 import geopandas as gpd
