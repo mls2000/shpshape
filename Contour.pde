@@ -42,7 +42,7 @@ class Contour {
     float denom = getACSColumnValue(denominatorIndex);
     float pct = denom == 0 ? 0.0 : num / denom * 100.0;
     println(pct);
-    g.fill(0, 0, 100 - pct);
+    g.fill(0, 0, 100 - pct * 2);
     g.beginShape();
     for (int i = 0; i < coordinates.size(); i++) {
       ShapeCoord c = coordinates.get(i);

@@ -91,8 +91,8 @@ void loadMaps() {
 }
 
 ArrayList<Contour> loadShapefile(String prefix) throws IOException {
-  Shapefile source = new Shapefile(new File(dataPath(prefix + ".shp")));
-  DbfTable     dbf = new DbfTable(new File(dataPath(prefix + ".dbf")));
+  Shapefile source = new Shapefile(new File(dataPath(prefix + "/" + prefix + ".shp")));
+  DbfTable     dbf = new DbfTable(new File(dataPath(prefix + "/" + prefix + ".dbf")));
   String[] ids = dbf.getStringColumn(ID_COLUMN);
   String[][] rowData = new String[dataColumns.length][ids.length];
   for (int i = 0; i < dataColumns.length; i++) {
