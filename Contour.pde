@@ -33,16 +33,8 @@ class Contour {
   
   void draw(PGraphics g, float x, float y) {
     g.pushMatrix();
-    //g.strokeWeight(0.5);
-    //g.stroke(0, 0, 40);
-    g.noStroke();
-    //g.noFill();
-    //g.fill(random(360), 40 * random(60), 25 * random(50));
-    float num = getACSColumnValue(numeratorIndex);
-    float denom = getACSColumnValue(denominatorIndex);
-    float pct = denom == 0 ? 0.0 : num / denom * 100.0;
-    println(pct);
-    g.fill(0, 0, 100 - pct * 2);
+    g.stroke(0, 0, 40);
+    g.noFill();
     g.beginShape();
     for (int i = 0; i < coordinates.size(); i++) {
       ShapeCoord c = coordinates.get(i);

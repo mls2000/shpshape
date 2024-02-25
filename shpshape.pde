@@ -10,33 +10,13 @@ boolean loaded = false;
 List<Contour> shapes;
 double minX, maxX, minY, maxY, scale;
 Map<String, Contour> lookup;
-List<String> acsColumns = new ArrayList();
 
-String numeratorCol = "C17002e2";
-String denominatorCol = "C17002e1";
-int numeratorIndex; 
-int denominatorIndex;
-
-
-
-
-/* block groups, which can be merged with ACS data */
-final String[] SOURCE_FILES = new String[]{"tl_2021_33_bg"};
-final String ID_COLUMN = "GEOID";
-final String[] dataColumns = new String[]{"NAMELSAD" , "COUNTYFP"};
-final String exportFileName = "tl_2021_33_bg";
-
-/* convert ACS files via python */
-final String[] ACS_FILES = new String[]{"X17_POVERTY.csv"};
-/* available columns are available from data/acs/BG_METADATA_2021.csv */
-/* in the ACS files, the first column is a sequence, second the geo */
-final int ACS_COL_START_INDEX = 2;
 
 /* roads */
-//final String[] SOURCE_FILES = new String[] {"tl_2021_33015_roads", "tl_2021_33017_roads"};
-//final String ID_COLUMN = "LINEARID";
-//final String[] dataColumns = new String[]{"FULLNAME","RTTYP","MTFCC"};
-//final String exportFileName = "tl_2021_33015_roads";
+final String[] SOURCE_FILES = new String[] {"tl_2021_33015_roads", "tl_2021_33017_roads"};
+final String ID_COLUMN = "LINEARID";
+final String[] dataColumns = new String[]{"FULLNAME","RTTYP","MTFCC"};
+final String exportFileName = "tl_2021_33015_roads";
 
 boolean exporting = true;
 
@@ -47,13 +27,13 @@ void setup() {
   colorMode(HSB, 360, 100, 100);
   textSize(25);
   smooth(4);
+  strokeWeight(0.5);  
 }
 
 
 
 void loadData() {
   loadMaps();  
-  loadDemoData();
   loaded = true;
 }
 
@@ -133,45 +113,7 @@ ArrayList<Contour> loadShapefile(String prefix) throws IOException {
   return container;
 }
 
-void loadDemoData() {
-  Table table = loadTable("acs/bg/BG_METADATA_2021.csv", "header");
-  Map<String, String> names = new HashMap(); //<>//
-  for (int i = 0; i < table.getRowCount(); i++) {
-    names.put(table.getString(i, "Short_Name"), table.getString(i, "Full_Name"));
-  }
-  acsColumns = new ArrayList();
-  for (String fname : ACS_FILES) {
-    table = loadTable("acs/bg/" + fname, "header");
-    String [] colNames = table.getColumnTitles();
-    for (int c = ACS_COL_START_INDEX; c < colNames.length; c++) {
-      String shortName = colNames[c];
-      String fullName = names.get(shortName);
-      acsColumns.add(fullName);
-      if (numeratorCol.equals(shortName)) {
-        numeratorIndex = c - ACS_COL_START_INDEX;
-      }
-      if (denominatorCol.equals(shortName)) {
-        denominatorIndex = c - ACS_COL_START_INDEX;
-      }      
-    }
-    /* geo id in the ACS file has a prefix of "15000US" */
-    final int idStart = "15000US".length();
-    for (int r = 0; r < table.getRowCount(); r++) {
-      String geoId = table.getString(r, 1).substring(idStart);
-      Contour kant = lookup.get(geoId);
-      if (kant != null) {
-        for (int c = ACS_COL_START_INDEX; c < colNames.length; c++) {
-           float f = table.getFloat(r, c);
-           kant.addACS(f);
-        }
-      }
-    }
-  }
-  //println(columns);
-  
-
-}
-
+ //<>//
 
 void draw() {
   background(0, 0, 100);

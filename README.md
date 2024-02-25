@@ -17,19 +17,7 @@ In addition to population and demographic data by location, the census provides 
 ## Prerequisites
 Some of this code assumes a comfort level running python code from the terminal or other command line interface. 
 
-You'll need [Processing](https://processing.org/download/) to generate the maps, and python3 to preprocess ACS data. In python3, you will need libraries for `geopandas`
-and `fiona`. Here's a python tip you may know: because different python projects might need different versions of the same libraries, it can be useful to create a virtual environment for each project. This creates a sandbox where you can install the library, isolated from other projects. Assuming you have python3, you can create the virtual environment and install the libraries with 
-```
-# open the terminal and cd to this folder
-# create the virtual environment
-python3 -m venv venv
-# activate the virtual environment
-. venv/bin/activate
-# install the libraries
-pip install pandas
-pip install geopandas
-pip install fiona
-```
+You'll need [Processing](https://processing.org/download/) to generate the maps. 
 
 You will also need to download files from the census. 
 
@@ -37,42 +25,8 @@ You will also need to download files from the census.
 
 The census data to run the example is not included in this git repository. You'll need to download files from the census, and save them to the `data` file of this project. There you can unzip them. 
 
-Download the [TIGER files for the block groups in New Hampshire](https://www2.census.gov/geo/tiger/TIGER2021/BG/tl_2021_33_bg.zip) (FIPS code 33). 
-
-Download the [ACS data](https://www2.census.gov/geo/tiger/TIGER_DP/2021ACS/ACS_2021_5YR_BG_33.gdb.zip). Once this file is unzipped, you will have a folder called `ACS_2021_5YR_BG_33_NEW_HAMPSHIRE.gdb`. In order to convert into something we can use, you'll need to run the  instructions in the "to convert demographics from gdb to csv" below. 
+This branch has an example of mapping roads data. You will need to download and unzip [these](https://www2.census.gov/geo/tiger/TIGER2021/ROADS/tl_2021_33017_roads.zip) [two](https://www2.census.gov/geo/tiger/TIGER2021/ROADS/tl_2021_33015_roads.zip) files. 
 
 
-Once all the data is unzipped and transformed in the `data` file for this project, open Processing. In Processing, from the `File` dialog, choose `Open` and select the `shpshape.pde` file in this project. Press the "play" button at the top, and it should open up a new window that looks like this: 
+Once all the data is unzipped in the `data` file for this project, open Processing. In Processing, from the `File` dialog, choose `Open` and select the `shpshape.pde` file in this project. Press the "play" button at the top, and it should open up a new window that looks like this: 
 
-
-
-There is an extra example of mapping roads data. For that you will need [these](https://www2.census.gov/geo/tiger/TIGER2021/ROADS/tl_2021_33017_roads.zip) [two](https://www2.census.gov/geo/tiger/TIGER2021/ROADS/tl_2021_33015_roads.zip) files. 
-
-
-##  to convert demographics from gdb to csv
-The ACS data is downloaded in a format that isn't supported by the Processing libraries we are using. But we can convert from that format to a simple `.csv` file using python. Assuming you installed the python libraries we need according to the "Prerequisites" section above, run these commands in a command line interface, from this project folder.
-
-```
-# make sure the virtual environment is active
-. venv/bin/activate
-# make the output folder. Since this example is using ACS Block Group data, 
-# we'll call it 'acs/bg'
-mkdir -p data/acs/bg
-# import the libraries you need
-import geopandas as gpd
-import fiona
-# specify the .gdb folder we want to convert? 
-path = 'data/ACS_2021_5YR_BG_33_NEW_HAMPSHIRE.gdb'
-# go through the available layers of .gdb data and convert each of them. 
-for flayer in fiona.listlayers(path):
-  fc = gpd.read_file(path, driver='FileGDB', layer=flayer)
-  fc.to_csv(f'./data/acs/bg/{flayer}.csv')
-```
-
-once this is complete you should see a bunch of files in the `acs/bg` folder like 
-```
-X01_AGE_AND_SEX.csv
-X02_RACE.csv
-X03_HISPANIC_OR_LATINO_ORIGIN.csv
-```
-etc.
