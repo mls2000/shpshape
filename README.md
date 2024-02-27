@@ -30,3 +30,4 @@ This branch has an example of mapping roads data. You will need to download and 
 
 Once all the data is unzipped in the `data` file for this project, open Processing. In Processing, from the `File` dialog, choose `Open` and select the `shpshape.pde` file in this project. Press the "play" button at the top, and it should open up a new window that looks like this: 
 
+<img width="712" alt="Screen Shot 2024-02-24 at 7 46 03 PM" src="https://github.com/mls2000/shpshape/assets/146397277/de1ec6a9-6344-4bdd-915e-f9c854473214">
