@@ -44,6 +44,8 @@ Download the [ACS data](https://www2.census.gov/geo/tiger/TIGER_DP/2021ACS/ACS_2
 
 Once all the data is unzipped and transformed in the `data` file for this project, open Processing. In Processing, from the `File` dialog, choose `Open` and select the `shpshape.pde` file in this project. Press the "play" button at the top, and it should open up a new window that looks like this: 
 
+<img width="712" alt="Screen Shot 2024-02-24 at 7 25 00 PM" src="https://github.com/mls2000/shpshape/assets/146397277/532c755a-42fe-4ecf-98fd-a1f59b1f3eea">
+
 
 There is also a branch called `roads` that has an extra example of mapping roads data. 
 
