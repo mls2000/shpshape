@@ -32,7 +32,6 @@ class Contour {
 
   
   void draw(PGraphics g, float x, float y) {
-    g.pushMatrix();
     g.stroke(0, 0, 40);
     g.noFill();
     g.beginShape();
@@ -41,7 +40,6 @@ class Contour {
       g.vertex(x + c.x, y + c.y);
     }
     g.endShape();
-    g.popMatrix();
   }
   
 }

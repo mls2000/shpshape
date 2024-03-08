@@ -5,12 +5,22 @@ import java.util.Map;
 import com.benfry.carto.Shapefile;
 import com.benfry.table.DbfTable;
 
+PImage theOtherMap;
+final String MAP_NAME = "s-l1600.jpeg";
+int mapImageW, mapImageH;
 
 boolean loaded = false;
 List<Contour> shapes;
 double minX, maxX, minY, maxY, scale;
 Map<String, Contour> lookup;
 
+Slider opacity;
+Slider vertical;
+Slider horizontal;
+Slider rotation;
+Slider imageScale;
+Slider[] controls;
+Slider active = null;
 
 /* roads */
 final String[] SOURCE_FILES = new String[] {"tl_2021_33015_roads", "tl_2021_33017_roads"};
@@ -18,7 +28,7 @@ final String ID_COLUMN = "LINEARID";
 final String[] dataColumns = new String[]{"FULLNAME","RTTYP","MTFCC"};
 final String exportFileName = "tl_2021_33015_roads";
 
-boolean exporting = true;
+boolean exporting = false;
 
 
 void setup() {
@@ -34,6 +44,16 @@ void setup() {
 
 void loadData() {
   loadMaps();  
+  theOtherMap = loadImage(MAP_NAME);
+  mapImageW = theOtherMap.width; 
+  mapImageH = theOtherMap.height;
+  opacity = new Slider(width - 130, height - 170, 20, 100, 0, 255);
+  vertical = new Slider(width - 100, height - 170, 20, 100, -height, height);
+  rotation = new Slider(width - 70, height - 170, 20, 100, -PI, PI); // TAU = PI * 2
+  imageScale = new Slider(width - 40, height - 170, 20, 100, 0.1, 0.5);
+  horizontal = new Slider(width - 130, height - 50, 110, 20, -width, width);
+  controls = new Slider[]{opacity, vertical, horizontal, rotation, imageScale};
+  active = null;
   loaded = true;
 }
 
@@ -122,12 +142,13 @@ void draw() {
     fill(0);
   } else {
     noFill();
-    pushMatrix();
     stroke(0);
     for (Contour kant : shapes) {
       kant.draw(g, 0, 0);
     }
-    popMatrix();
+    drawImage();
+    drawControls();
+    
     noLoop();
     if (exporting) {
       export();
@@ -135,6 +156,52 @@ void draw() {
     }
   }
 }
+
+
+
+
+
+
+void drawImage() {
+  
+  pushMatrix();
+  pushStyle();
+  translate(width/2 + horizontal.getValue(), height/2 + vertical.getValue());
+  rotate(rotation.getValue());
+  scale(imageScale.getValue());
+  tint(255, opacity.getValue());  // Display at half opacity
+  image(theOtherMap, -mapImageW/2, -mapImageH/2);
+  popStyle();
+  popMatrix();
+}
+
+
+void drawControls() {
+  opacity.draw();
+  vertical.draw();
+  rotation.draw();
+  imageScale.draw();
+  horizontal.draw();
+}
+
+
+void mousePressed() {
+  active = null;
+  for (int i = 0; i < controls.length; i++) {
+    if (controls[i].contains(mouseX, mouseY)) {
+      active = controls[i];
+    }
+  }
+}
+
+void mouseDragged() {
+  if (active != null) {
+    active.setTo(mouseX, mouseY);
+  }
+  loop();
+}
+
+
 
 void export() {
   float minX = Float.NaN;
