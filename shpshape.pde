@@ -47,11 +47,11 @@ void loadData() {
   theOtherMap = loadImage(MAP_NAME);
   mapImageW = theOtherMap.width; 
   mapImageH = theOtherMap.height;
-  opacity = new Slider(width - 130, height - 170, 20, 100, 0, 255);
-  vertical = new Slider(width - 100, height - 170, 20, 100, -height, height);
-  rotation = new Slider(width - 70, height - 170, 20, 100, -PI, PI); // TAU = PI * 2
-  imageScale = new Slider(width - 40, height - 170, 20, 100, 0.1, 0.5);
-  horizontal = new Slider(width - 130, height - 50, 110, 20, -width, width);
+  opacity = new Slider(width - 130, height - 170, 20, 100, 0, 255, "opa");
+  vertical = new Slider(width - 100, height - 170, 20, 100, -height, height, "vert");
+  rotation = new Slider(width - 70, height - 170, 20, 100, -PI, PI, "rot"); 
+  imageScale = new Slider(width - 40, height - 170, 20, 100, 0.1, 0.5, "size");
+  horizontal = new Slider(width - 130, height - 50, 110, 20, -width, width, "horiz");
   controls = new Slider[]{opacity, vertical, horizontal, rotation, imageScale};
   active = null;
   loaded = true;
@@ -177,11 +177,14 @@ void drawImage() {
 
 
 void drawControls() {
+  pushStyle();
+  textSize(14);
   opacity.draw();
   vertical.draw();
   rotation.draw();
   imageScale.draw();
   horizontal.draw();
+  popStyle();
 }
 
 
